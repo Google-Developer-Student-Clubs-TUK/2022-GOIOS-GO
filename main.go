@@ -1,6 +1,14 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"GOIOS/src/config"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+)
+
+var (
+	db *gorm.DB = config.ConnectDB()
+)
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
@@ -11,6 +19,7 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+	defer config.DisconnectDB(db)
 	r := setupRouter()
 	r.Run(":8080")
 }
