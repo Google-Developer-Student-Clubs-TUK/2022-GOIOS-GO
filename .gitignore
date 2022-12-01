@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/go
 # Edit at https://www.toptal.com/developers/gitignore?templates=go
 
+.DS_Store
+.AppleDouble
+.LSOverride
 ### Go ###
 # If you prefer the allow list template instead of the deny list, see community template:
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
@@ -24,4 +27,14 @@
 # Go workspace file
 go.work
 
+*.iml
+*.ipr
+*.iws
+.idea/
+/build/
+/dist/
+/out/
+
 # End of https://www.toptal.com/developers/gitignore/api/go
+
+/data/
