@@ -2,6 +2,7 @@ package main
 
 import (
 	"GOIOS/src/config"
+	"GOIOS/src/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -16,6 +17,14 @@ func setupRouter() *gin.Engine {
 		c.String(200, "pong")
 	})
 	return r
+}
+
+func init() {
+	db.AutoMigrate(&models.Group{}, &models.UserGroup{}, &models.User{})
+	if err := db.SetupJoinTable(&models.User{}, "Groups", &models.UserGroup{}); err != nil {
+		println(err.Error())
+		panic("Failed to setup join table")
+	}
 }
 
 func main() {
