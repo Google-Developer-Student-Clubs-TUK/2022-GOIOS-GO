@@ -14,10 +14,7 @@ var (
 
 func init() {
 	db.AutoMigrate(&models.Group{}, &models.UserGroup{}, &models.User{})
-	if err := db.SetupJoinTable(&models.User{}, "Groups", &models.UserGroup{}); err != nil {
-		println(err.Error())
-		panic("Failed to setup join table")
-	}
+
 }
 
 func main() {
