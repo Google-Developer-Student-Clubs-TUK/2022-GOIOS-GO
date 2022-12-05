@@ -10,10 +10,13 @@ import (
 func Routes() {
 	route := gin.Default()
 
-	route.POST("/api/v1/user", controllers.CreateUser)
-	route.GET("/api/v1/user", controllers.GetUser)
-	// route.GET("/todo", controllers.GetAllTodos)
-	// route.PUT("/todo/:idTodo", controllers.UpdateTodo)
+	v1 := route.Group("/api/v1")
+	{
+		v1.POST("/user", controllers.CreateUser)
+		v1.GET("/user", controllers.GetUser)
+		// route.GET("/todo", controllers.GetAllTodos)
+		// route.PUT("/todo/:idTodo", controllers.UpdateTodo)
+	}
 	// route.DELETE("/todo/:idTodo", controllers.DeleteTodo)
 
 	// Run route whenever triggered

@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"net/http"
-
+	"errors"
 	"GOIOS/src/config"
 	"GOIOS/src/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"github.com/jackc/pgconn"
 )
 
 // Define database client
@@ -37,6 +38,13 @@ func CreateUser(context *gin.Context) {
 	// Querying to database
 	result := db.Create(&user)
 	if result.Error != nil {
+		if pgError := result.Error.(*pgconn.PgError); errors.Is(result.Error, pgError) {
+			switch pgError.Code {
+			case "23505":
+				context.JSON(http.StatusConflict, gin.H{"error": "same data"})
+				return
+		}
+	}
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong"})
 		return
 	}
