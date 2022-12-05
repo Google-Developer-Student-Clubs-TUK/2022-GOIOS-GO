@@ -2,9 +2,10 @@ package config
 
 import (
 	"GOIOS/data"
+	"log"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"log"
 )
 
 func ConnectDB() *gorm.DB {
