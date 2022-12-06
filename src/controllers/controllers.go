@@ -1,14 +1,14 @@
 package controllers
 
 import (
-	"net/http"
-	"errors"
 	"GOIOS/src/config"
 	"GOIOS/src/models"
+	"errors"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"github.com/jackc/pgconn"
+	"gorm.io/gorm"
 )
 
 // Define database client
@@ -19,6 +19,16 @@ var userdata []models.User
 type UserResponse struct {
 	models.User
 }
+
+// Welcome godoc
+// @Summary Summary를 적어 줍니다.
+// @Description 자세한 설명은 이곳에 적습니다.
+// @name get-string-by-int
+// @Accept  json
+// @Produce  json
+// @Param name path string true "User name"
+// @Router /user [post]
+// @Success 200 {object} welcomeModel
 
 // Create todo data to database by run this function
 func CreateUser(context *gin.Context) {
@@ -43,8 +53,8 @@ func CreateUser(context *gin.Context) {
 			case "23505":
 				context.JSON(http.StatusConflict, gin.H{"error": "same data"})
 				return
+			}
 		}
-	}
 		context.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong"})
 		return
 	}
@@ -57,6 +67,16 @@ func CreateUser(context *gin.Context) {
 	// Creating http response
 	context.JSON(http.StatusCreated, response)
 }
+
+// Welcome godoc
+// @Summary Summary를 적어 줍니다.
+// @Description 자세한 설명은 이곳에 적습니다.
+// @name get-string-by-int
+// @Accept  json
+// @Produce  json
+// @Param name path string true "User name"
+// @Router /user [get]
+// @Success 200 {object} welcomeModel
 
 func GetUser(context *gin.Context) {
 
