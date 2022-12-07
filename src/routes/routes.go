@@ -19,6 +19,7 @@ func Routes() {
 		// route.PUT("/todo/:idTodo", controllers.UpdateTodo)
 		// route.DELETE("/todo/:idTodo", controllers.DeleteTodo)
 	}
+
 	// Run route whenever triggered
 	route.Run()
 }
