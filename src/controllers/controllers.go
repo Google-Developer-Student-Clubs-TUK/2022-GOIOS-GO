@@ -4,13 +4,11 @@ import (
 	"errors"
 	"github.com/jackc/pgconn"
 	"net/http"
-	"errors"
 	"GOIOS/src/config"
 	"GOIOS/src/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"github.com/jackc/pgconn"
 )
 
 // Define database client
