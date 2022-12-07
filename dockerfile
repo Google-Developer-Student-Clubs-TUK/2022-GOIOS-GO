@@ -12,6 +12,11 @@ RUN go mod download
 
 COPY . .
         
+
+RUN go install github.com/swaggo/swag/cmd/swag@v1.7.8
+
+RUN swag init
+
 RUN go build -o main .
 
 CMD ["./main"]
