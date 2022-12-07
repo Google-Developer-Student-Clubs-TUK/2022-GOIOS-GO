@@ -1,14 +1,14 @@
 package controllers
 
 import (
-	"net/http"
 	"errors"
+	"github.com/jackc/pgconn"
+	"net/http"
 	"GOIOS/src/config"
 	"GOIOS/src/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"github.com/jackc/pgconn"
 )
 
 // Define database client
@@ -37,6 +37,7 @@ func CreateUser(context *gin.Context) {
 
 	// Querying to database
 	result := db.Create(&user)
+
 	if result.Error != nil {
 		if pgError := result.Error.(*pgconn.PgError); errors.Is(result.Error, pgError) {
 			switch pgError.Code {
@@ -73,5 +74,34 @@ func GetUser(context *gin.Context) {
 		"message": "Success",
 		"data":    userdata,
 	})
+
+}
+
+func Login(context *gin.Context) {
+
+	var data models.User
+
+	// Binding request body json to request body struct
+	if err := context.ShouldBindJSON(&data); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	err := db.Where("user_name = ?", data.UserName).First(&userdata).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			context.JSON(http.StatusNotFound, gin.H{"result": "Fail", "message": "일치하는 회원 정보가 없습니다."})
+			return
+		}
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Error getting data"})
+		return
+	}
+
+	if userdata[0].Password == data.Password {
+		context.JSON(http.StatusOK, gin.H{"result": "Success", "user": userdata[0]})
+		return
+	} else {
+		context.JSON(http.StatusNotAcceptable, gin.H{"result": "Fail", "message": "일치하는 회원 정보가 없습니다."})
+		return
+	}
 
 }
