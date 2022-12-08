@@ -21,17 +21,13 @@ func Routes() {
 
 	route := gin.New()
 
-	apiRoutes := route.Group(docs.SwaggerInfo.BasePath)
+	v1 := route.Group(docs.SwaggerInfo.BasePath)
 	{
-		v1 := apiRoutes.Group("/api/v1")
-		{
-			v1.POST("/user", controllers.CreateUser)
-			v1.GET("/user", controllers.GetUser)
-      v1.POST("/user/login", controllers.Login)
-		}
+		v1.POST("/user", controllers.CreateUser)
+		v1.GET("/user", controllers.GetUser)
+		v1.POST("/user/login", controllers.Login)
 	}
 	route.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 
 	route.Run()
 }
