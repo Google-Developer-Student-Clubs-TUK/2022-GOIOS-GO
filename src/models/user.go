@@ -19,6 +19,7 @@ type UserGroup struct {
 	GroupID       uint
 	Group         Group         `gorm:"foreignKey:GroupID;references:ID"`
 	AvailableTime pq.Int64Array `gorm:"type:integer[]"`
+	Master        string
 }
 
 //func (user UserGroup) BeforeSave(db *gorm.DB) error {
