@@ -27,6 +27,7 @@ func Routes() {
 		v1.GET("/user", controllers.GetUser)
 		v1.POST("/user/login", controllers.Login)
 		v1.POST("/group", controllers.CreateGroup)
+		v1.POST("/group/join", controllers.JoinGroup)
 
 	}
 	route.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
