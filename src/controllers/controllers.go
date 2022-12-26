@@ -197,10 +197,20 @@ func JoinGroup(context *gin.Context) {
 		return
 	}
 
-	err := db.Take(&groupData, "Group Code = ?", requestData.GroupCode).Error
+	err := db.Take(&groupData, "group_code = ?", requestData.GroupCode).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			context.JSON(http.StatusNotFound, gin.H{"result": "Fail", "message": "그룹정보를 불러올 수  없습니다."})
+			return
+		}
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Error getting data"})
+		return
+	}
+
+	err = db.Take(&userData, "user_name = ?", requestData.UserName).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			context.JSON(http.StatusNotFound, gin.H{"result": "Fail", "message": "일치하는 회원 정보가 없습니다."})
 			return
 		}
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Error getting data"})
