@@ -5,19 +5,16 @@ import (
 	"GOIOS/src/models"
 	"crypto/rand"
 	"errors"
-	"github.com/jackc/pgconn"
 	"io"
 	"net/http"
-	"GOIOS/src/config"
-	"GOIOS/src/models"
+
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgconn"
 	"gorm.io/gorm"
 )
 
-
 var db *gorm.DB = config.ConnectDB()
 var userdata []models.User
-
 
 type UserResponse struct {
 	models.User
@@ -26,6 +23,11 @@ type UserResponse struct {
 type CreateGroupRequest struct {
 	UserName  string
 	GroupName string
+}
+
+type JoinGroupRequest struct {
+	UserName  string
+	GroupCode string
 }
 
 // Create todo data to database by run this function
@@ -177,6 +179,56 @@ func CreateGroup(context *gin.Context) {
 
 	context.JSON(http.StatusCreated, gin.H{
 		"message":   "Success",
+		"groupName": groupData.Name,
+		"groupCode": groupData.GroupCode,
+		"groupID":   groupData.ID,
+	})
+
+}
+
+func JoinGroup(context *gin.Context) {
+	var userData models.User
+	var groupData models.Group
+	var userGroupData models.UserGroup
+	var requestData JoinGroupRequest
+
+	if err := context.ShouldBindJSON(&requestData); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := db.Take(&groupData, "group_code = ?", requestData.GroupCode).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			context.JSON(http.StatusNotFound, gin.H{"result": "Fail", "message": "그룹정보를 불러올 수  없습니다."})
+			return
+		}
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Error getting data"})
+		return
+	}
+
+	err = db.Take(&userData, "user_name = ?", requestData.UserName).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			context.JSON(http.StatusNotFound, gin.H{"result": "Fail", "message": "일치하는 회원 정보가 없습니다."})
+			return
+		}
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Error getting data"})
+		return
+	}
+
+	userGroupData.GroupID = groupData.ID
+	userGroupData.UserID = userData.ID
+
+	joinResult := db.Create(&userGroupData)
+
+	if joinResult.Error != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": "Something went wrong"})
+		return
+	}
+
+	context.JSON(http.StatusCreated, gin.H{
+		"message":   "Join Success",
 		"groupName": groupData.Name,
 		"groupCode": groupData.GroupCode,
 		"groupID":   groupData.ID,
